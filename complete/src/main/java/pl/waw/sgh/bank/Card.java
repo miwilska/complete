@@ -20,7 +20,12 @@ public abstract class Card {
 
     private BigDecimal balance;
 
-    private boolean savings;
+    private boolean isFaceUp;
+
+    private Suit suit;
+
+    private Face face;
+
 
     public Card() {
     }
@@ -29,6 +34,16 @@ public abstract class Card {
         this.cardID = cardID;
         this.cardPile = cardPile;
         this.balance = new BigDecimal(0);
+        this.suit = Suit.CLUBS ;
+        this.face = Face.ACE;
+    }
+
+    public Card(CardPile cardPile, Face f, Suit s, boolean isFaceUp){
+        this.cardPile = cardPile;
+        this.balance = new BigDecimal(0);
+        this.suit = s ;
+        this.face = f;
+        this.isFaceUp = isFaceUp;
     }
 
     public Card(CardPile cardPile) {
@@ -36,10 +51,27 @@ public abstract class Card {
         this.balance = new BigDecimal(0);
     }
 
-    public Card(CardPile cardPile, boolean savings) {
+    public Card(CardPile cardPile, boolean isFaceUp) {
         this.cardPile = cardPile;
         this.balance = new BigDecimal(0);
-        this.savings = savings;
+        this.isFaceUp = isFaceUp;
+    }
+
+
+    public Suit getSuit() {
+        return suit;
+    }
+
+    public void setSuit(Suit suit) {
+        this.suit = suit;
+    }
+
+    public Face getFace() {
+        return face;
+    }
+
+    public void setFace(Face face) {
+        this.face = face;
     }
 
     public Long getCardID() {
@@ -67,12 +99,12 @@ public abstract class Card {
         this.balance = balance;
     }
 
-    public boolean isSavings() {
-        return savings;
+    public boolean isFaceUp() {
+        return isFaceUp;
     }
 
-    public void setSavings(boolean savings) {
-        this.savings = savings;
+    public void setFaceUp(boolean faceUp) {
+        this.isFaceUp = faceUp;
     }
 
     public void deposit(BigDecimal amount) throws IllegalDataException {
@@ -84,7 +116,7 @@ public abstract class Card {
         this.balance = balance.add(amount);
     }
 
-    public void charge(BigDecimal amount)  throws IllegalDataException {
+  /*  public void charge(BigDecimal amount)  throws IllegalDataException {
         if (amount.compareTo(new BigDecimal(0))<=0)
             throw new IllegalDataException(
                     "Can't charge Card ID: "
@@ -93,16 +125,16 @@ public abstract class Card {
 
         balance = balance.subtract(amount);
     }
-
+*/
 
     @Override
     public String toString() {
         return this.getClass().getSimpleName()
                 .replace("Card", "") + "{" +
                 "ID=" + cardID +
-                "sav=" + savings +
-                ", " + balance.setScale(2,BigDecimal.ROUND_HALF_EVEN) +
-                ", cust=" + cardPile.getPileTyp() +
+               // "sav=" + isFaceUp +
+               // ", " + balance.setScale(2,BigDecimal.ROUND_HALF_EVEN) +
+                ", cardPile=" + cardPile.getPileTyp() +
                 '}';
     }
 }

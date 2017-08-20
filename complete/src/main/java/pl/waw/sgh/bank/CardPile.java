@@ -13,7 +13,7 @@ public class CardPile {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long customerID;
+    private Long cardPileID;
 
     private String pileNumber;
 
@@ -22,10 +22,10 @@ public class CardPile {
     public CardPile() {
     }
 
-    public CardPile(Long customerID,
+    public CardPile(Long cardPileID,
                     String pileNumber,
                     String pileTyp) {
-        this.customerID = customerID;
+        this.cardPileID = cardPileID;
         this.pileNumber = pileNumber;
         this.pileTyp = pileTyp;
     }
@@ -36,12 +36,12 @@ public class CardPile {
         this.pileTyp = pileTyp;
     }
 
-    public Long getCustomerID() {
-        return customerID;
+    public Long getCardPileID() {
+        return cardPileID;
     }
 
-    public void setCustomerID(Long customerID) {
-        this.customerID = customerID;
+    public void setCardPileID(Long cardPileID) {
+        this.cardPileID = cardPileID;
     }
 
     public String getPileNumber() {
@@ -63,7 +63,7 @@ public class CardPile {
     @Override
     public String toString() {
         return "CardPile{" +
-                "" + customerID +
+                "" + cardPileID +
                 ", " + pileNumber + '\'' +
                 ", " + pileTyp + '\'' +
                 '}';

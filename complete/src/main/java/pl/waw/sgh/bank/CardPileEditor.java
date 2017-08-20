@@ -34,7 +34,7 @@ public class CardPileEditor extends VerticalLayout {
 	/* Fields to edit properties in CardPile entity */
 	TextField pileNumber = new TextField("Pile number");
 	TextField pileTyp = new TextField("Pile typ");
-	Binder<CardPile> customerBinder;
+	Binder<CardPile> pileBinder;
 
 	/* Action buttons */
 	Button save = new Button("Save", FontAwesome.SAVE);
@@ -57,14 +57,14 @@ public class CardPileEditor extends VerticalLayout {
 		// wire action buttons to save, delete and reset
 		save.addClickListener(e -> {
 			try {
-				customerBinder.writeBean(cardPile);
+				pileBinder.writeBean(cardPile);
 				repository.save(cardPile);
 			} catch (ValidationException ve) {
 				Notification.show("Problem validating cardPile " + ve.getMessage());
 			}
 		});
 		delete.addClickListener(e -> repository.delete(cardPile));
-		cancel.addClickListener(e -> editCustomer(cardPile));
+		cancel.addClickListener(e -> editCardPile(cardPile));
 		setVisible(false);
 	}
 
@@ -73,11 +73,11 @@ public class CardPileEditor extends VerticalLayout {
 		void onChange();
 	}
 
-	public final void editCustomer(CardPile c) {
-		final boolean persisted = c.getCustomerID() != null;
+	public final void editCardPile(CardPile c) {
+		final boolean persisted = c.getCardPileID() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			cardPile = repository.findOne(c.getCustomerID());
+			cardPile = repository.findOne(c.getCardPileID());
 		}
 		else {
 			cardPile = c;
@@ -88,9 +88,9 @@ public class CardPileEditor extends VerticalLayout {
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
 
-		customerBinder = new Binder<>(CardPile.class);
-		customerBinder.bindInstanceFields(this);
-		customerBinder.readBean(cardPile);
+		pileBinder = new Binder<>(CardPile.class);
+		pileBinder.bindInstanceFields(this);
+		pileBinder.readBean(cardPile);
 
 		setVisible(true);
 

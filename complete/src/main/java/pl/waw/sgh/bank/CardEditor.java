@@ -34,7 +34,9 @@ public class CardEditor extends VerticalLayout {
 	/* Fields to edit properties in card entity */
 	//TextField customer = new TextField("CardPile");
 	TextField balance = new TextField("Balance");
-	Binder<Card> accBinder;
+	TextField suit = new TextField("Suit");
+	TextField face = new TextField("Face");
+	Binder<Card> crdBinder;
 
 	/* Action buttons */
 	Button save = new Button("Save", FontAwesome.SAVE);
@@ -45,7 +47,7 @@ public class CardEditor extends VerticalLayout {
 	public CardEditor(CardRepository repository) {
 		this.repository = repository;
 
-		addComponents(balance, actions);
+		addComponents(suit, face, actions);
 
 		// Configure and style components
 		setSpacing(true);
@@ -56,7 +58,7 @@ public class CardEditor extends VerticalLayout {
 		// wire action buttons to save, delete and reset
 		save.addClickListener(e -> {
 					try {
-						accBinder.writeBean(card);
+						crdBinder.writeBean(card);
 						repository.save(card);
 					} catch (ValidationException ve) {
 						Notification.show("Problem validating card " + ve.getMessage());
@@ -84,10 +86,14 @@ public class CardEditor extends VerticalLayout {
 		// Bind card properties to similarly named fields
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
-		accBinder = new Binder<>(Card.class);
-		accBinder.forField(balance).withConverter(new StringToBigDecimalConverter("Must be a number"))
+		crdBinder = new Binder<>(Card.class);
+		crdBinder.forField(balance).withConverter(new StringToBigDecimalConverter("Must be a number"))
 				.bind(Card::getBalance, Card::setBalance);
-		accBinder.readBean(card);
+		crdBinder.bindInstanceFields(this);
+
+
+		crdBinder.readBean(card);
+
 
 		setVisible(true);
 

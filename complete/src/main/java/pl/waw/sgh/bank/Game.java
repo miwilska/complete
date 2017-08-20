@@ -1,25 +1,22 @@
 package pl.waw.sgh.bank;
 
 import pl.waw.sgh.bank.exceptions.AccountNotFoundException;
-import pl.waw.sgh.bank.exceptions.IllegalDataException;
-import pl.waw.sgh.bank.exceptions.NotEnoughMoneyException;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by prubac on 4/15/2016.
  */
-public class Bank {
+public class Game {
 
     List<Card> cardList = new ArrayList<>();
 
     List<CardPile> cardPileList = new ArrayList<>();
 
-    Long lastCustomerId = 1L;
+    Long lastCardPileId = 1L;
 
-    Long lastAccountId = 1L;
+    Long lastCardId = 1L;
 
     public List<CardPile> getCardPileList() {
         return cardPileList;
@@ -29,7 +26,7 @@ public class Bank {
         return cardList;
     }
 
-    public List<Card> getAccountListForCustomer(CardPile cardPile) {
+    public List<Card> getCardsListForCardPile(CardPile cardPile) {
         List<Card> customerCardList = new ArrayList<>();
         for (Card a : cardList) {
             if (a.getCardPile().equals(cardPile))
@@ -38,42 +35,42 @@ public class Bank {
         return customerCardList;
     }
 
-    public void deleteAccount(Card acc) {
+    public void deleteCard(Card acc) {
         cardList.remove(acc);
     }
 
-    public CardPile createCustomer(String firstName,
-                                   String lastName) {
-        CardPile c1 = new CardPile(lastCustomerId,
-                firstName, lastName);
-        lastCustomerId++;
+    public CardPile createCardPile(String pileNumber,
+                                   String pileTyp) {
+        CardPile c1 = new CardPile(lastCardPileId,
+                pileNumber, pileTyp);
+        lastCardPileId++;
         cardPileList.add(c1);
         return c1;
     }
 
-    public Card createAccount(CardPile owner,
+    public Card addCardToPile(CardPile somePile,
                               boolean isSavings) {
         Card acc;
         //= null;
         if (isSavings) {
-            acc = new SavingsCards(lastAccountId, owner);
+            acc = new AddingTurnedBackCards(lastCardId, somePile);
         }
         else
-            acc = new DebitCards(lastAccountId, owner);
-        lastAccountId++;
+            acc = new AddingCards(lastCardId, somePile);
+        lastCardId++;
         cardList.add(acc);
         return acc;
     }
 
-    public void transfer(Long fromID,
+ /*   public void transfer(Long fromID,
                          Long toID, Double amount) throws AccountNotFoundException,
             NotEnoughMoneyException, IllegalDataException {
         //if (amount > 10000)
         //    throw new RuntimeException("can't transfer more than 10000");
 
         BigDecimal bgAmount = new BigDecimal(amount);
-        Card fromAcc = getAccountById(fromID);
-        Card toAcc = getAccountById(toID);
+        Card fromAcc = getCardById(fromID);
+        Card toAcc = getCardById(toID);
 
         if (fromAcc.getBalance().compareTo(bgAmount)>0) {
             fromAcc.charge(bgAmount);
@@ -83,20 +80,20 @@ public class Bank {
             //System.out.println("Can't transfer - not enough money");
         }
     }
+*/
+    public Card getCardById(Long crdId) throws AccountNotFoundException {
 
-    public Card getAccountById(Long accId) throws AccountNotFoundException {
-
-        for (Card acc : cardList) {
-            if (acc.getCardID().equals(accId))
-                return acc;
+        for (Card crd : cardList) {
+            if (crd.getCardID().equals(crdId))
+                return crd;
         }
-        throw new AccountNotFoundException("Card with ID: " + accId + " not found!!!");
+        throw new AccountNotFoundException("Card with ID: " + crdId + " not found!!!");
         //return null;
     }
 
-    public CardPile getCustomerById(Long customerId) {
+    public CardPile getCardPileById(Long cardPileID) {
         for (CardPile cardPile : cardPileList) {
-            if (cardPile.getCustomerID().equals(customerId))
+            if (cardPile.getCardPileID().equals(cardPileID))
                 return cardPile;
         }
         return null;
@@ -105,11 +102,11 @@ public class Bank {
 
     @Override
     public String toString() {
-        return "Bank{" +
-                "\n accs=" + cardList +
-                "\n custs=" + cardPileList +
-                "\n lastCustId=" + lastCustomerId +
-                "\n lastAccId=" + lastAccountId +
+        return "Game{" +
+                "\n cards=" + cardList +
+                "\n cardPiles=" + cardPileList +
+                "\n lastCardPileId=" + lastCardPileId +
+                "\n lastCardId=" + lastCardId +
                 "\n}";
     }
 }
