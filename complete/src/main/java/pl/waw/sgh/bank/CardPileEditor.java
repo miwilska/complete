@@ -22,19 +22,19 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 @SpringComponent
 @UIScope
-public class CustomerEditor extends VerticalLayout {
+public class CardPileEditor extends VerticalLayout {
 
-	private final CustomerRepository repository;
+	private final CardPileRepository repository;
 
 	/**
-	 * The currently edited customer
+	 * The currently edited cardPile
 	 */
-	private Customer customer;
+	private CardPile cardPile;
 
-	/* Fields to edit properties in Customer entity */
-	TextField firstName = new TextField("First name");
-	TextField lastName = new TextField("Last name");
-	Binder<Customer> customerBinder;
+	/* Fields to edit properties in CardPile entity */
+	TextField pileNumber = new TextField("Pile number");
+	TextField pileTyp = new TextField("Pile typ");
+	Binder<CardPile> customerBinder;
 
 	/* Action buttons */
 	Button save = new Button("Save", FontAwesome.SAVE);
@@ -43,10 +43,10 @@ public class CustomerEditor extends VerticalLayout {
 	CssLayout actions = new CssLayout(save, cancel, delete);
 
 	@Autowired
-	public CustomerEditor(CustomerRepository repository) {
+	public CardPileEditor(CardPileRepository repository) {
 		this.repository = repository;
 
-		addComponents(firstName, lastName, actions);
+		addComponents(pileNumber, pileTyp, actions);
 
 		// Configure and style components
 		setSpacing(true);
@@ -57,14 +57,14 @@ public class CustomerEditor extends VerticalLayout {
 		// wire action buttons to save, delete and reset
 		save.addClickListener(e -> {
 			try {
-				customerBinder.writeBean(customer);
-				repository.save(customer);
+				customerBinder.writeBean(cardPile);
+				repository.save(cardPile);
 			} catch (ValidationException ve) {
-				Notification.show("Problem validating customer " + ve.getMessage());
+				Notification.show("Problem validating cardPile " + ve.getMessage());
 			}
 		});
-		delete.addClickListener(e -> repository.delete(customer));
-		cancel.addClickListener(e -> editCustomer(customer));
+		delete.addClickListener(e -> repository.delete(cardPile));
+		cancel.addClickListener(e -> editCustomer(cardPile));
 		setVisible(false);
 	}
 
@@ -73,31 +73,31 @@ public class CustomerEditor extends VerticalLayout {
 		void onChange();
 	}
 
-	public final void editCustomer(Customer c) {
+	public final void editCustomer(CardPile c) {
 		final boolean persisted = c.getCustomerID() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			customer = repository.findOne(c.getCustomerID());
+			cardPile = repository.findOne(c.getCustomerID());
 		}
 		else {
-			customer = c;
+			cardPile = c;
 		}
 		cancel.setVisible(persisted);
 
-		// Bind customer properties to similarly named fields
+		// Bind cardPile properties to similarly named fields
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
 
-		customerBinder = new Binder<>(Customer.class);
+		customerBinder = new Binder<>(CardPile.class);
 		customerBinder.bindInstanceFields(this);
-		customerBinder.readBean(customer);
+		customerBinder.readBean(cardPile);
 
 		setVisible(true);
 
 		// A hack to ensure the whole form is visible
 		save.focus();
-		// Select all text in firstName field automatically
-		firstName.selectAll();
+		// Select all text in pileNumber field automatically
+		pileNumber.selectAll();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {

@@ -22,19 +22,19 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 @SpringComponent
 @UIScope
-public class AccountEditor extends VerticalLayout {
+public class CardEditor extends VerticalLayout {
 
-	private final AccountRepository repository;
+	private final CardRepository repository;
 
 	/**
-	 * The currently edited account
+	 * The currently edited card
 	 */
-	private Account account;
+	private Card card;
 
-	/* Fields to edit properties in account entity */
-	//TextField customer = new TextField("Customer");
+	/* Fields to edit properties in card entity */
+	//TextField customer = new TextField("CardPile");
 	TextField balance = new TextField("Balance");
-	Binder<Account> accBinder;
+	Binder<Card> accBinder;
 
 	/* Action buttons */
 	Button save = new Button("Save", FontAwesome.SAVE);
@@ -42,7 +42,7 @@ public class AccountEditor extends VerticalLayout {
 	CssLayout actions = new CssLayout(save, delete);
 
 	@Autowired
-	public AccountEditor(AccountRepository repository) {
+	public CardEditor(CardRepository repository) {
 		this.repository = repository;
 
 		addComponents(balance, actions);
@@ -56,13 +56,13 @@ public class AccountEditor extends VerticalLayout {
 		// wire action buttons to save, delete and reset
 		save.addClickListener(e -> {
 					try {
-						accBinder.writeBean(account);
-						repository.save(account);
+						accBinder.writeBean(card);
+						repository.save(card);
 					} catch (ValidationException ve) {
-						Notification.show("Problem validating account " + ve.getMessage());
+						Notification.show("Problem validating card " + ve.getMessage());
 					}
 		});
-		delete.addClickListener(e -> repository.delete(account));
+		delete.addClickListener(e -> repository.delete(card));
 		setVisible(false);
 	}
 
@@ -71,29 +71,29 @@ public class AccountEditor extends VerticalLayout {
 		void onChange();
 	}
 
-	public final void editAccount(Account c) {
-		final boolean persisted = c.getAccountID() != null;
+	public final void editAccount(Card c) {
+		final boolean persisted = c.getCardID() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			account = repository.findOne(c.getAccountID());
+			card = repository.findOne(c.getCardID());
 		}
 		else {
-			account = c;
+			card = c;
 		}
 
-		// Bind account properties to similarly named fields
+		// Bind card properties to similarly named fields
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
-		accBinder = new Binder<>(Account.class);
+		accBinder = new Binder<>(Card.class);
 		accBinder.forField(balance).withConverter(new StringToBigDecimalConverter("Must be a number"))
-				.bind(Account::getBalance, Account::setBalance);
-		accBinder.readBean(account);
+				.bind(Card::getBalance, Card::setBalance);
+		accBinder.readBean(card);
 
 		setVisible(true);
 
 		// A hack to ensure the whole form is visible
 		save.focus();
-		// Select all text in firstName field automatically
+		// Select all text in pileNumber field automatically
 		//customer.selectAll();
 	}
 

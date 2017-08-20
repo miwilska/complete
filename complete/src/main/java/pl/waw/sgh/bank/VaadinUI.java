@@ -21,13 +21,13 @@ import java.util.ArrayList;
 @Theme("valo")
 public class VaadinUI extends UI {
 
-	private final CustomerRepository repo;
+	private final CardPileRepository repo;
 
-	private final AccountRepository accountRepo;
+	private final CardRepository accountRepo;
 
-	private final CustomerEditor editor;
+	private final CardPileEditor editor;
 
-	private final AccountEditor accountEditor;
+	private final CardEditor cardEditor;
 
 	private final Grid grid;
 
@@ -44,16 +44,16 @@ public class VaadinUI extends UI {
 	private HorizontalLayout newAccountsLayout;
 
 	@Autowired
-	public VaadinUI(CustomerRepository repo, CustomerEditor editor, AccountRepository accountRepo, AccountEditor accountEditor) {
+	public VaadinUI(CardPileRepository repo, CardPileEditor editor, CardRepository accountRepo, CardEditor cardEditor) {
 		this.repo = repo;
 		this.editor = editor;
 		this.accountRepo = accountRepo;
-		this.accountEditor = accountEditor;
-		this.grid = new Grid(Customer.class);
-		this.accountGrid = new Grid(Account.class);
+		this.cardEditor = cardEditor;
+		this.grid = new Grid(CardPile.class);
+		this.accountGrid = new Grid(Card.class);
 		this.filter = new TextField();
-		this.addNewBtn = new Button("New customer", FontAwesome.PLUS);
-		this.addNewDebitAccountBtn = new Button("New Debit", FontAwesome.PLUS);
+		this.addNewBtn = new Button("New pile", FontAwesome.PLUS);
+		this.addNewDebitAccountBtn = new Button("New card", FontAwesome.PLUS);
 		this.addNewSavingsAccountBtn = new Button("New Savings", FontAwesome.PLUS);
 	}
 
@@ -66,7 +66,7 @@ public class VaadinUI extends UI {
 
 		newAccountsLayout = new HorizontalLayout(addNewDebitAccountBtn, addNewSavingsAccountBtn);
 
-		VerticalLayout accountLayout = new VerticalLayout(accountGrid, newAccountsLayout, accountEditor);
+		VerticalLayout accountLayout = new VerticalLayout(accountGrid, newAccountsLayout, cardEditor);
 
 		HorizontalLayout grids = new HorizontalLayout(customerLayout, accountLayout);
 
@@ -83,29 +83,29 @@ public class VaadinUI extends UI {
 
 		grid.setHeight(300, Unit.PIXELS);
 		grid.setWidth(350, Unit.PIXELS);
-		grid.setColumns("customerID", "firstName", "lastName");
+		grid.setColumns("customerID", "pileNumber", "pileTyp");
 
 		accountGrid.setHeight(300, Unit.PIXELS);
 		accountGrid.setWidth(350, Unit.PIXELS);
-		accountGrid.setColumns("accountID", "savings", "balance");
+		accountGrid.setColumns("cardID", "savings", "balance");
 
 		//accountGrid.getColumn("savings").setRenderer(new ImageRenderer());
 		
-		filter.setPlaceholder("Filter by last name");
+		filter.setPlaceholder("Filter by pile typs");
 
 		// Hook logic to components
 
 		// Replace listing with filtered content when user changes filter
 		filter.addValueChangeListener(e -> listCustomers(e.getValue()));
 
-		// Connect selected Customer to editor or hide if none is selected
+		// Connect selected CardPile to editor or hide if none is selected
 		grid.addSelectionListener(e -> {
 			if (e.getAllSelectedItems().isEmpty()) {
 				editor.setVisible(false);
 				listAccounts(null);
 			}
 			else {
-				Customer selCust = new ArrayList<Customer>(grid.getSelectedItems()).get(0);
+				CardPile selCust = new ArrayList<CardPile>(grid.getSelectedItems()).get(0);
 				editor.editCustomer(selCust);
 				listAccounts(selCust);
 			}
@@ -114,22 +114,22 @@ public class VaadinUI extends UI {
 
 		accountGrid.addSelectionListener(e -> {
 			if (e.getAllSelectedItems().isEmpty()) {
-				accountEditor.setVisible(false);
+				cardEditor.setVisible(false);
 			}
 			else {
-				Account selAcc = new ArrayList<Account>(accountGrid.getSelectedItems()).get(0);
-				accountEditor.editAccount(selAcc);
+				Card selAcc = new ArrayList<Card>(accountGrid.getSelectedItems()).get(0);
+				cardEditor.editAccount(selAcc);
 			}
 		});
 
-		// Instantiate and edit new Customer the new button is clicked
-		addNewBtn.addClickListener(e -> editor.editCustomer(new Customer("", "")));
+		// Instantiate and edit new CardPile the new button is clicked
+		addNewBtn.addClickListener(e -> editor.editCustomer(new CardPile("", "")));
 
-		addNewDebitAccountBtn.addClickListener(e -> accountEditor.editAccount(
-				new DebitAccount(new ArrayList<Customer>(grid.getSelectedItems()).get(0))));
+		addNewDebitAccountBtn.addClickListener(e -> cardEditor.editAccount(
+				new DebitCards(new ArrayList<CardPile>(grid.getSelectedItems()).get(0))));
 
-		addNewSavingsAccountBtn.addClickListener(e -> accountEditor.editAccount(
-				new SavingsAccount(new ArrayList<Customer>(grid.getSelectedItems()).get(0))));
+		addNewSavingsAccountBtn.addClickListener(e -> cardEditor.editAccount(
+				new SavingsCards(new ArrayList<CardPile>(grid.getSelectedItems()).get(0))));
 
 		// Listen changes made by the editor, refresh data from backend
 		editor.setChangeHandler(() -> {
@@ -138,9 +138,9 @@ public class VaadinUI extends UI {
 		});
 
 		// Listen changes made by the editor, refresh data from backend
-		accountEditor.setChangeHandler(() -> {
-			accountEditor.setVisible(false);
-			listAccounts(new ArrayList<Customer>(grid.getSelectedItems()).get(0));
+		cardEditor.setChangeHandler(() -> {
+			cardEditor.setVisible(false);
+			listAccounts(new ArrayList<CardPile>(grid.getSelectedItems()).get(0));
 			//listCustomers(filter.getValue());
 		});
 
@@ -154,12 +154,12 @@ public class VaadinUI extends UI {
 	private void listCustomers(String text) {
 		if (StringUtils.isEmpty(text)) {
 			grid.setDataProvider(
-					new ListDataProvider<Customer>(repo.findAll()));
+					new ListDataProvider<CardPile>(repo.findAll()));
 			newAccountsLayout.setVisible(false);
 		}
 		else {
-			grid.setDataProvider(new ListDataProvider<Customer>(
-					repo.findByLastNameStartsWithIgnoreCase(text)));
+			grid.setDataProvider(new ListDataProvider<CardPile>(
+					repo.findByPileTypStartsWithIgnoreCase(text)));
 			newAccountsLayout.setVisible(false);
 		}
 	}
@@ -167,14 +167,14 @@ public class VaadinUI extends UI {
 
 
 	// tag::listAccounts[]
-	private void listAccounts(Customer owner) {
+	private void listAccounts(CardPile owner) {
 		if (owner==null) {
 			accountGrid.setDataProvider(
-					new ListDataProvider<Account>(new ArrayList<Account>()));
+					new ListDataProvider<Card>(new ArrayList<Card>()));
 		}
 		else {
-			accountGrid.setDataProvider((new ListDataProvider<Account>(
-					accountRepo.findByCustomer(owner))));
+			accountGrid.setDataProvider((new ListDataProvider<Card>(
+					accountRepo.findByCardPile(owner))));
 			newAccountsLayout.setVisible(true);
 		}
 	}

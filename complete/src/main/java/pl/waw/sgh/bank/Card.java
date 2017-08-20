@@ -9,54 +9,54 @@ import java.math.BigDecimal;
  * Created by prubac on 4/15/2016.
  */
 @Entity
-public abstract class Account {
+public abstract class Card {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long accountID;
+    private Long cardID;
 
     @ManyToOne
-    private Customer customer;
+    private CardPile cardPile;
 
     private BigDecimal balance;
 
     private boolean savings;
 
-    public Account() {
+    public Card() {
     }
 
-    public Account(Long accountID, Customer customer) {
-        this.accountID = accountID;
-        this.customer = customer;
+    public Card(Long cardID, CardPile cardPile) {
+        this.cardID = cardID;
+        this.cardPile = cardPile;
         this.balance = new BigDecimal(0);
     }
 
-    public Account(Customer customer) {
-        this.customer = customer;
+    public Card(CardPile cardPile) {
+        this.cardPile = cardPile;
         this.balance = new BigDecimal(0);
     }
 
-    public Account(Customer customer, boolean savings) {
-        this.customer = customer;
+    public Card(CardPile cardPile, boolean savings) {
+        this.cardPile = cardPile;
         this.balance = new BigDecimal(0);
         this.savings = savings;
     }
 
-    public Long getAccountID() {
-        return accountID;
+    public Long getCardID() {
+        return cardID;
     }
 
-    public void setAccountID(Long accountID) {
-        this.accountID = accountID;
+    public void setCardID(Long cardID) {
+        this.cardID = cardID;
     }
 
     @ManyToOne
-    public Customer getCustomer() {
-        return customer;
+    public CardPile getCardPile() {
+        return cardPile;
     }
 
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
+    public void setCardPile(CardPile cardPile) {
+        this.cardPile = cardPile;
     }
 
     public BigDecimal getBalance() {
@@ -78,8 +78,8 @@ public abstract class Account {
     public void deposit(BigDecimal amount) throws IllegalDataException {
         if (amount.compareTo(new BigDecimal(0))<=0)
             throw new IllegalDataException(
-                    "Can't deposit on Account ID: "
-                            + accountID +
+                    "Can't deposit on Card ID: "
+                            + cardID +
                             " negative amount: " + amount);
         this.balance = balance.add(amount);
     }
@@ -87,8 +87,8 @@ public abstract class Account {
     public void charge(BigDecimal amount)  throws IllegalDataException {
         if (amount.compareTo(new BigDecimal(0))<=0)
             throw new IllegalDataException(
-                    "Can't charge Account ID: "
-                            + accountID +
+                    "Can't charge Card ID: "
+                            + cardID +
                             " negative amount: " + amount);
 
         balance = balance.subtract(amount);
@@ -98,11 +98,11 @@ public abstract class Account {
     @Override
     public String toString() {
         return this.getClass().getSimpleName()
-                .replace("Account", "") + "{" +
-                "ID=" + accountID +
+                .replace("Card", "") + "{" +
+                "ID=" + cardID +
                 "sav=" + savings +
                 ", " + balance.setScale(2,BigDecimal.ROUND_HALF_EVEN) +
-                ", cust=" + customer.getLastName() +
+                ", cust=" + cardPile.getPileTyp() +
                 '}';
     }
 }

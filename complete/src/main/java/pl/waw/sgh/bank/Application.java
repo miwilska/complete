@@ -18,68 +18,72 @@ public class Application {
 	}
 
 	@Bean
-	public CommandLineRunner demo(CustomerRepository repository, AccountRepository accountRepository) {
+	public CommandLineRunner demo(CardPileRepository repository, CardRepository cardRepository) {
 		return (args) -> {
 			// save a couple of customers
 
-			Customer c1 = new Customer("Jack", "Bauer");
-			Customer c2 = new Customer("Chloe", "O'Brian");
+			CardPile c1 = new CardPile("1", "tableaux");
+			CardPile c2 = new CardPile("2", "tableaux");
 			repository.save(c1);
 			repository.save(c2);
-			repository.save(new Customer("Kim", "Bauer"));
-			repository.save(new Customer("David", "Palmer"));
-			repository.save(new Customer("Michelle", "Dessler"));
+			repository.save(new CardPile("3", "tableaux"));
+			repository.save(new CardPile("4", "tableaux"));
+			repository.save(new CardPile("5", "tableaux"));
 
-			accountRepository.save(new SavingsAccount(c1));
-			accountRepository.save(new DebitAccount(c1));
+			repository.save(new CardPile("1", "foundation"));
+			repository.save(new CardPile("2", "foundation"));
+			repository.save(new CardPile("3", "foundation"));
 
-			accountRepository.save(new SavingsAccount(c2));
-			accountRepository.save(new DebitAccount(c2));
+			cardRepository.save(new SavingsCards(c1));
+			cardRepository.save(new DebitCards(c1));
+
+			cardRepository.save(new SavingsCards(c2));
+			cardRepository.save(new DebitCards(c2));
 
 			// fetch all customers
-			log.info("Customers found with findAll():");
+			log.info("Piles found with findAll():");
 			log.info("-------------------------------");
-			for (Customer customer : repository.findAll()) {
-				log.info(customer.toString());
+			for (CardPile cardPile : repository.findAll()) {
+				log.info(cardPile.toString());
 			}
             log.info("");
 
 			// fetch all customers
-			log.info("Accounts found with findAll():");
+			log.info("Cards found with findAll():");
 			log.info("-------------------------------");
-			for (Account acc: accountRepository.findAll()) {
+			for (Card acc: cardRepository.findAll()) {
 				log.info(acc.toString());
 			}
 			log.info("");
 
-			// fetch all accounts for customer
-			log.info("Accounts found with findByCustomer():");
+			// fetch all accounts for cardPile
+			log.info("Cards found with findByCustomer():");
 			log.info("-------------------------------");
-			for (Account acc: accountRepository.findByCustomer(c1)) {
+			for (Card acc: cardRepository.findByCardPile(c1)) {
 				log.info(acc.toString());
 			}
 			log.info("");
 
 
-			// fetch an individual customer by ID
-			Customer customer = repository.findOne(1L);
-			log.info("Customer found with findOne(1L):");
+			// fetch an individual cardPile by ID
+			CardPile cardPile = repository.findOne(1L);
+			log.info("Piles found with findOne(1L):");
 			log.info("--------------------------------");
-			log.info(customer.toString());
+			log.info(cardPile.toString());
             log.info("");
 
 			// fetch customers by last name
-			log.info("Customer found with findByLastName('Bauer'):");
+			log.info("CardPile found with findByPileTyp('tableaux'):");
 			log.info("--------------------------------------------");
-			for (Customer bauer : repository.findByLastName("Bauer")) {
+			for (CardPile bauer : repository.findByPileTyp("tableaux")) {
 				log.info(bauer.toString());
 			}
             log.info("");
 			// fetch customers by last name
-			log.info("Customer found with findByLastNameStartsWithIgnoreCase('Bauer'):");
+			log.info("CardPile found with findByLastNameStartsWithIgnoreCase('tableaux'):");
 			log.info("--------------------------------------------");
-			for (Customer bauer : repository
-					.findByLastNameStartsWithIgnoreCase("bau")) {
+			for (CardPile bauer : repository
+					.findByPileTypStartsWithIgnoreCase("bau")) {
 				log.info(bauer.toString());
 			}
 			log.info("");

@@ -13,55 +13,55 @@ import java.util.List;
  */
 public class Bank {
 
-    List<Account> accountList = new ArrayList<>();
+    List<Card> cardList = new ArrayList<>();
 
-    List<Customer> customerList = new ArrayList<>();
+    List<CardPile> cardPileList = new ArrayList<>();
 
     Long lastCustomerId = 1L;
 
     Long lastAccountId = 1L;
 
-    public List<Customer> getCustomerList() {
-        return customerList;
+    public List<CardPile> getCardPileList() {
+        return cardPileList;
     }
 
-    public List<Account> getAccountList() {
-        return accountList;
+    public List<Card> getCardList() {
+        return cardList;
     }
 
-    public List<Account> getAccountListForCustomer(Customer customer) {
-        List<Account> customerAccountList = new ArrayList<>();
-        for (Account a : accountList) {
-            if (a.getCustomer().equals(customer))
-                customerAccountList.add(a);
+    public List<Card> getAccountListForCustomer(CardPile cardPile) {
+        List<Card> customerCardList = new ArrayList<>();
+        for (Card a : cardList) {
+            if (a.getCardPile().equals(cardPile))
+                customerCardList.add(a);
         }
-        return customerAccountList;
+        return customerCardList;
     }
 
-    public void deleteAccount(Account acc) {
-        accountList.remove(acc);
+    public void deleteAccount(Card acc) {
+        cardList.remove(acc);
     }
 
-    public Customer createCustomer(String firstName,
+    public CardPile createCustomer(String firstName,
                                    String lastName) {
-        Customer c1 = new Customer(lastCustomerId,
+        CardPile c1 = new CardPile(lastCustomerId,
                 firstName, lastName);
         lastCustomerId++;
-        customerList.add(c1);
+        cardPileList.add(c1);
         return c1;
     }
 
-    public Account createAccount(Customer owner,
-                                 boolean isSavings) {
-        Account acc;
+    public Card createAccount(CardPile owner,
+                              boolean isSavings) {
+        Card acc;
         //= null;
         if (isSavings) {
-            acc = new SavingsAccount(lastAccountId, owner);
+            acc = new SavingsCards(lastAccountId, owner);
         }
         else
-            acc = new DebitAccount(lastAccountId, owner);
+            acc = new DebitCards(lastAccountId, owner);
         lastAccountId++;
-        accountList.add(acc);
+        cardList.add(acc);
         return acc;
     }
 
@@ -72,8 +72,8 @@ public class Bank {
         //    throw new RuntimeException("can't transfer more than 10000");
 
         BigDecimal bgAmount = new BigDecimal(amount);
-        Account fromAcc = getAccountById(fromID);
-        Account toAcc = getAccountById(toID);
+        Card fromAcc = getAccountById(fromID);
+        Card toAcc = getAccountById(toID);
 
         if (fromAcc.getBalance().compareTo(bgAmount)>0) {
             fromAcc.charge(bgAmount);
@@ -84,20 +84,20 @@ public class Bank {
         }
     }
 
-    public Account getAccountById(Long accId) throws AccountNotFoundException {
+    public Card getAccountById(Long accId) throws AccountNotFoundException {
 
-        for (Account acc : accountList) {
-            if (acc.getAccountID().equals(accId))
+        for (Card acc : cardList) {
+            if (acc.getCardID().equals(accId))
                 return acc;
         }
-        throw new AccountNotFoundException("Account with ID: " + accId + " not found!!!");
+        throw new AccountNotFoundException("Card with ID: " + accId + " not found!!!");
         //return null;
     }
 
-    public Customer getCustomerById(Long customerId) {
-        for (Customer customer : customerList) {
-            if (customer.getCustomerID().equals(customerId))
-                return customer;
+    public CardPile getCustomerById(Long customerId) {
+        for (CardPile cardPile : cardPileList) {
+            if (cardPile.getCustomerID().equals(customerId))
+                return cardPile;
         }
         return null;
     }
@@ -106,8 +106,8 @@ public class Bank {
     @Override
     public String toString() {
         return "Bank{" +
-                "\n accs=" + accountList +
-                "\n custs=" + customerList +
+                "\n accs=" + cardList +
+                "\n custs=" + cardPileList +
                 "\n lastCustId=" + lastCustomerId +
                 "\n lastAccId=" + lastAccountId +
                 "\n}";
