@@ -1,15 +1,15 @@
-package pl.waw.sgh.bank;
+package complet;
 
 import com.vaadin.data.Binder;
 import com.vaadin.data.ValidationException;
-import com.vaadin.ui.*;
-import org.springframework.beans.factory.annotation.Autowired;
-
+import com.vaadin.data.converter.StringToBigDecimalConverter;
 import com.vaadin.event.ShortcutAction;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
+import com.vaadin.ui.*;
 import com.vaadin.ui.themes.ValoTheme;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * A simple example to introduce building forms. As your real application is
@@ -22,31 +22,35 @@ import com.vaadin.ui.themes.ValoTheme;
  */
 @SpringComponent
 @UIScope
-public class CardPileEditor extends VerticalLayout {
+public class CardEditor extends VerticalLayout {
 
-	private final CardPileRepository repository;
+	private final CardRepository repository;
 
 	/**
-	 * The currently edited cardPile
+	 * The currently edited card
 	 */
-	private CardPile cardPile;
+	private Card card;
 
-	/* Fields to edit properties in CardPile entity */
-	TextField pileNumber = new TextField("Pile number");
-	TextField pileTyp = new TextField("Pile typ");
-	Binder<CardPile> pileBinder;
+	/* Fields to edit properties in card entity */
+	//TextField customer = new TextField("CardPile");
+	TextField balance = new TextField("Balance");
+	TextField cardPile = new TextField("Odzywka");
+	TextField description = new TextField("Opis");
+	//TextField suit = new TextField("Suit");
+	//TextField face = new TextField("Face");
+	Binder<Card> crdBinder;
 
 	/* Action buttons */
 	Button save = new Button("Save", FontAwesome.SAVE);
-	Button cancel = new Button("Cancel");
 	Button delete = new Button("Delete", FontAwesome.TRASH_O);
-	CssLayout actions = new CssLayout(save, cancel, delete);
+	CssLayout actions = new CssLayout(save, delete);
 
 	@Autowired
-	public CardPileEditor(CardPileRepository repository) {
+	public CardEditor(CardRepository repository) {
 		this.repository = repository;
 
-		addComponents(pileNumber, pileTyp, actions);
+		//addComponents(suit, face, actions);
+		addComponents(cardPile, description, actions);
 
 		// Configure and style components
 		setSpacing(true);
@@ -56,15 +60,14 @@ public class CardPileEditor extends VerticalLayout {
 
 		// wire action buttons to save, delete and reset
 		save.addClickListener(e -> {
-			try {
-				pileBinder.writeBean(cardPile);
-				repository.save(cardPile);
-			} catch (ValidationException ve) {
-				Notification.show("Problem validating cardPile " + ve.getMessage());
-			}
+					try {
+						crdBinder.writeBean(card);
+						repository.save(card);
+					} catch (ValidationException ve) {
+						Notification.show("Problem validating card " + ve.getMessage());
+					}
 		});
-		delete.addClickListener(e -> repository.delete(cardPile));
-		cancel.addClickListener(e -> editCardPile(cardPile));
+		delete.addClickListener(e -> repository.delete(card));
 		setVisible(false);
 	}
 
@@ -73,31 +76,34 @@ public class CardPileEditor extends VerticalLayout {
 		void onChange();
 	}
 
-	public final void editCardPile(CardPile c) {
-		final boolean persisted = c.getCardPileID() != null;
+	public final void editAccount(Card c) {
+		final boolean persisted = c.getCardID() != null;
 		if (persisted) {
 			// Find fresh entity for editing
-			cardPile = repository.findOne(c.getCardPileID());
+			card = repository.findOne(c.getCardID());
 		}
 		else {
-			cardPile = c;
+			card = c;
 		}
-		cancel.setVisible(persisted);
 
-		// Bind cardPile properties to similarly named fields
+		// Bind card properties to similarly named fields
 		// Could also use annotation or "manual binding" or programmatically
 		// moving values from fields to entities before saving
+		crdBinder = new Binder<>(Card.class);
+		crdBinder.forField(balance).withConverter(new StringToBigDecimalConverter("Must be a number"))
+				.bind(Card::getBalance, Card::setBalance);
+		crdBinder.bindInstanceFields(this);
 
-		pileBinder = new Binder<>(CardPile.class);
-		pileBinder.bindInstanceFields(this);
-		pileBinder.readBean(cardPile);
+
+		crdBinder.readBean(card);
+
 
 		setVisible(true);
 
 		// A hack to ensure the whole form is visible
 		save.focus();
 		// Select all text in pileNumber field automatically
-		pileNumber.selectAll();
+		//customer.selectAll();
 	}
 
 	public void setChangeHandler(ChangeHandler h) {

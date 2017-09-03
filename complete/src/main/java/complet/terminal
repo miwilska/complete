@@ -1,0 +1,16 @@
+magdalena@tracer:~/komputerowe/java/kursPola/gs-accessing-data-jpa/complete$ git remote add origin https://github.com/miwilska/gs-accessing-data-jpa.git
+fatal: remote origin already exists.
+magdalena@tracer:~/komputerowe/java/kursPola/gs-accessing-data-jpa/complete$ git config --get remote.origin.url
+https://github.com/prubach/gs-accessing-data-jpa
+magdalena@tracer:~/komputerowe/java/kursPola/gs-accessing-data-jpa/complete$ git remote show origin
+* remote origin
+  Fetch URL: https://github.com/prubach/gs-accessing-data-jpa
+  Push  URL: https://github.com/prubach/gs-accessing-data-jpa
+  HEAD branch: master
+  Remote branches:
+    master   tracked
+    rest     tracked
+    vaadin   tracked
+    vaadin-8 tracked
+  Local branches configured for 'git pull':
+    master   merges with remote master

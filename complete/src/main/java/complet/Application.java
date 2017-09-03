@@ -1,4 +1,4 @@
-package pl.waw.sgh.bank;
+package complet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,19 +22,21 @@ public class Application {
 		return (args) -> {
 			// save a couple of customers
 
-			CardPile c1 = new CardPile("1", "tableaux");
-			CardPile c2 = new CardPile("2", "tableaux");
-			CardPile c3 = new CardPile("3", "tableaux");
+			CardPile c1 = new CardPile("1 trefl", "wieloznaczne: 1)słabe NT- 12-15 PC (skład bezatutowy oraz trzy czwórki (bez singla trefl), 2)trefl 12-18PC (5+ trefli), 3) silne 19++ PC  skład dowolny");
+			CardPile c2 = new CardPile("1 karo", " dwuznaczne: 1) kara (12-18PC 5+ kar) 2) układ 4-4-4-1");
+			CardPile c3 = new CardPile("1 kier", "12-15PC 5+ kierów");
 			repository.save(c1);
 			repository.save(c2);
 			repository.save(c3);
-			repository.save(new CardPile("4", "tableaux"));
-			repository.save(new CardPile("5", "tableaux"));
+			repository.save(new CardPile("1", "1 pik"));
+			repository.save(new CardPile("5", "1 bez atu"));
 
 			repository.save(new CardPile("1", "foundation"));
 			repository.save(new CardPile("2", "foundation"));
 			repository.save(new CardPile("3", "foundation"));
 
+
+		//	cardRepository.save(new AddingCards(new CardPile("1 karo", "negat")));
 			cardRepository.save(new AddingCards(c1,Suit.SPADES,Face.DEUCE));
 			cardRepository.save(new AddingCards(c1, Suit.CLUBS, Face.ACE));
 

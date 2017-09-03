@@ -1,4 +1,4 @@
-package pl.waw.sgh.bank;
+package complet;
 
 import com.vaadin.data.provider.ListDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,12 +82,13 @@ public class VaadinUI extends UI {
 		mainLayout.setSpacing(true);
 
 		grid.setHeight(500, Unit.PIXELS);
-		grid.setWidth(450, Unit.PIXELS);
+		grid.setWidth(850, Unit.PIXELS);
 		grid.setColumns("cardPileID", "pileNumber", "pileTyp");
 
 		cardGrid.setHeight(600, Unit.PIXELS);
 		cardGrid.setWidth(550, Unit.PIXELS);
 		cardGrid.setColumns("cardID", "suit", "face");//, "isFaceUp");
+		//cardGrid.setColumns("cardID", "cardPile", "description");//, "isFaceUp");
 
 		//cardGrid.getColumn("savings").setRenderer(new ImageRenderer());
 		

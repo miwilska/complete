@@ -1,4 +1,4 @@
-package pl.waw.sgh.bank;
+package complet;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

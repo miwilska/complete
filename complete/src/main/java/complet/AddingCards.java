@@ -1,4 +1,4 @@
-package pl.waw.sgh.bank;
+package complet;
 
 import javax.persistence.Entity;
 
@@ -16,12 +16,16 @@ public class AddingCards extends Card {
         super(cardID, cardPile);
     }
 
-    public AddingCards(CardPile cardPile) {
-        super(cardPile, true);
-    }
+  //  public AddingCards(CardPile cardPile) {
+  //      super(cardPile, true);
+  //  }
 
     public AddingCards(CardPile pile, Suit s, Face f){
         super(pile, f, s, true);
+    }
+
+    public AddingCards(CardPile cardPile) {
+        super(cardPile);
     }
 
 }

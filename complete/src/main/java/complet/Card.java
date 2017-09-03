@@ -1,6 +1,6 @@
-package pl.waw.sgh.bank;
+package complet;
 
-import pl.waw.sgh.bank.exceptions.IllegalDataException;
+import complet.exceptions.IllegalDataException;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -27,8 +27,11 @@ public abstract class Card {
     private Face face;
 
 
+
     public Card() {
     }
+
+
 
     public Card(Long cardID, CardPile cardPile) {
         this.cardID = cardID;
